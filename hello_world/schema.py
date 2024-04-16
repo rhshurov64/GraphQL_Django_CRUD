@@ -95,9 +95,37 @@ class CreateProductMutation(graphene.Mutation):
         return CreateProductMutation(product = product)
     
 
+class UpdateProductMutation(graphene.Mutation):
+    class Arguments:
+        id = graphene.Int(required = True)
+        name = graphene.String(required = True)
+        category = graphene.Int(required = True)
         
+    product = graphene.Field(ProductType)
     
+    @staticmethod
+    def mutate(root, info, id, name, category):
+        product = Product.objects.get(id=id)
+        product.name = name
+        product.category = Category.objects.get(id=category)
+        product.save()
+        return UpdateProductMutation(product = product)
 
+class DeleteProductMutation(graphene.Mutation):
+    
+    class Arguments:
+        id = graphene.Int(required = True)
+        
+    product = graphene.Field(ProductType)
+    
+    @staticmethod
+    def mutate(root, info, id):
+        product = Product.objects.get(id=id)
+        product.delete()
+        return DeleteProductMutation(product = product)
+    
+    
+    
 
 class Mutation(graphene.ObjectType):
     create_category = CreateCategoryMutation.Field()
@@ -105,6 +133,10 @@ class Mutation(graphene.ObjectType):
     delete_category = DeleteCategoryMutation.Field()
     
     create_product  = CreateProductMutation.Field()
+    update_product  = UpdateProductMutation.Field()
+    delete_product  = DeleteProductMutation.Field()
+    
+    
     
 
 schema = graphene.Schema(query= Query, mutation= Mutation)
