@@ -32,10 +32,16 @@ ALLOWED_HOSTS = []
 
 #Graphene configuration
 GRAPHENE = {
-    "SCHEMA": "hello_world.schema.schema"
+    "SCHEMA": "hello_world.schema.schema",
+    "MIDDLEWARE": [
+        "graphql_jwt.middleware.JSONWebTokenMiddleware",
+    ],
 }
 
-
+AUTHENTICATION_BACKENDS = [
+    "graphql_jwt.backends.JSONWebTokenBackend",
+    "django.contrib.auth.backends.ModelBackend",
+]
 
 # Application definition
 
@@ -47,8 +53,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     "graphene_django",
-    
-    'work'
+    'graphql_jwt',
+    'work',
     
 ]
 
